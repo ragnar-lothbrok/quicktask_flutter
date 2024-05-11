@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/helpers/helper_service.dart';
 import 'package:flutter_demo/screens/task_list.dart';
@@ -145,8 +146,16 @@ class _TaskDetailsState extends State<TaskDetails> {
                   task.description = _descriptionController.text;
                   bool existingTask = task.id != null;
                   await taskService.save(task);
-                  helperService.showMessage(context,
-                      'Task \'${task.title}\' ${existingTask ? 'updated' : 'saved'} successfully!');
+                  // helperService.showMessage(context,
+                  //     'Task \'${task.title}\' ${existingTask ? 'updated' : 'saved'} successfully!');
+                  await AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.success,
+                    animType: AnimType.rightSlide,
+                    title: 'Success',
+                    desc:
+                        'Task \'${task.title}\' ${existingTask ? 'updated' : 'saved'} successfully!',
+                  ).show();
                   if (mounted) {
                     Navigator.of(context).pop(task);
                   }

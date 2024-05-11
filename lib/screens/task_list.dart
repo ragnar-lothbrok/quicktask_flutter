@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/helpers/helper_service.dart';
 import 'package:intl/intl.dart';
@@ -120,8 +121,16 @@ class _TaskListState extends State<TaskList> {
                         task.completed = !task.completed;
                         TaskService taskService = TaskService();
                         bool success = await taskService.save(task);
-                        helperService.showMessage(context,
-                            'Task ${task.title} is marked ${task.completed ? 'Completed' : 'Incompleted'}!');
+                        // helperService.showMessage(context,
+                        //     'Task ${task.title} is marked ${task.completed ? 'Completed' : 'Incompleted'}!');
+                        await AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.success,
+                          animType: AnimType.rightSlide,
+                          title: 'Success',
+                          desc:
+                              'Task ${task.title} is marked ${task.completed ? 'Completed' : 'Incompleted'}!',
+                        ).show();
                         if (success) {
                           await fetch();
                         }
@@ -132,8 +141,16 @@ class _TaskListState extends State<TaskList> {
                       icon: const Icon(Icons.delete),
                       onPressed: () async {
                         bool success = await taskService.delete(task.id!);
-                        helperService.showMessage(context,
-                            '${task.completed ? 'Completed' : 'Incompleted'}Task ${task.title} is deleted successfully!');
+                        // helperService.showMessage(context,
+                        //     '${task.completed ? 'Completed' : 'Incompleted'}Task ${task.title} is deleted successfully!');
+                        await AwesomeDialog(
+                          context: context,
+                          dialogType: DialogType.success,
+                          animType: AnimType.rightSlide,
+                          title: 'Success',
+                          desc:
+                              '${task.completed ? 'Completed' : 'Incompleted'}Task ${task.title} is deleted successfully!',
+                        ).show();
                         if (success) {
                           await fetch();
                         }
@@ -180,7 +197,14 @@ class _TaskListState extends State<TaskList> {
                 final ParseUser parseUser = await ParseUser.currentUser();
                 final result = await parseUser.logout();
                 if (result.success) {
-                  helperService.showMessage(context, 'Logout Successful.');
+                  // helperService.showMessage(context, 'Logout Successful.');
+                  await AwesomeDialog(
+                    context: context,
+                    dialogType: DialogType.success,
+                    animType: AnimType.rightSlide,
+                    title: 'Logout Success',
+                    desc: 'You have successfully logged out.',
+                  ).show();
                   Navigator.of(context).pushNamedAndRemoveUntil(
                     '/login',
                     (route) => false,

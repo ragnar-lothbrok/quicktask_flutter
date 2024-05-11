@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/helpers/app_regex.dart';
 import 'package:flutter_demo/helpers/helper_service.dart';
@@ -251,6 +252,13 @@ class _LoginState extends State<Login> {
                     error: true);
               }
             });
+            await AwesomeDialog(
+              context: context,
+              dialogType: DialogType.success,
+              animType: AnimType.rightSlide,
+              title: 'Sign up Success',
+              desc: 'You have successfully signed up.',
+            ).show();
           },
           child:
               const Text('Signup', style: TextStyles.font11DarkBlue400Weight),
@@ -326,14 +334,26 @@ class _LoginState extends State<Login> {
           onPressed: () async {
             String username = _usernameController.text.trim().toLowerCase();
             String password = _passwordController.text;
+
             login(username, password).then((success) {
               if (success) {
-                helperService.showMessage(context, 'Login Successful.');
+                // helperService.showMessage(context, 'Login Successful.');
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.success,
+                  animType: AnimType.rightSlide,
+                  title: 'Login Success',
+                  desc: 'You have successfully Logged up.',
+                ).show();
                 Navigator.of(context).pushReplacementNamed("/");
               } else {
-                helperService.showMessage(context,
-                    'Incorrect username or password, please try again.',
-                    error: true);
+                AwesomeDialog(
+                  context: context,
+                  dialogType: DialogType.error,
+                  animType: AnimType.rightSlide,
+                  title: 'Error',
+                  desc: 'Wrong username or password provided.',
+                ).show();
               }
             });
           },
