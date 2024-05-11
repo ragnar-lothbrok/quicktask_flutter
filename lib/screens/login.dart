@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo/helpers/app_regex.dart';
+import 'package:flutter_demo/helpers/helper_service.dart';
+import 'package:flutter_demo/themes/styles.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import '../main.dart';
 
@@ -35,6 +38,7 @@ class _LoginState extends State<Login> {
   final TextEditingController _displayNameController =
       TextEditingController(text: '');
   bool login1 = true;
+  HelperService helperService = HelperService();
 
   //login
   Future<bool> login(String username, String password) async {
@@ -44,6 +48,18 @@ class _LoginState extends State<Login> {
 
       final parseUser = ParseUser(username, password, null);
       final result = await parseUser.login();
+      return result.success;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  //logout
+  Future<bool> logout() async {
+    try {
+      final ParseUser parseUser = await ParseUser.currentUser();
+      final result = await parseUser.logout();
       return result.success;
     } catch (e) {
       print(e);
@@ -65,30 +81,6 @@ class _LoginState extends State<Login> {
       print(e);
       return false;
     }
-  }
-
-  //show message
-  void _showMessage(String message, {bool? error}) {
-    const double height = 50;
-    const EdgeInsets padding = EdgeInsets.fromLTRB(50, 0, 50, 0);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Container(
-        padding: padding,
-        height: height,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: Colors.red,
-            border: Border.all(width: 2.0, color: Colors.black),
-            borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: padding,
-          child: Text(message, textAlign: TextAlign.center),
-        ),
-      ),
-      backgroundColor: Colors.transparent,
-      elevation: 1000,
-      behavior: SnackBarBehavior.floating,
-    ));
   }
 
   List<Widget> signupForm() {
@@ -219,7 +211,20 @@ class _LoginState extends State<Login> {
             String email = _emailController.text.trim().toLowerCase();
             String displayName = _displayNameController.text.trim();
             if (password != rePassword) {
-              _showMessage('Password and Re-password do not match.',
+              helperService.showMessage(
+                  context, 'Password and Re-password do not match.',
+                  error: true);
+              return;
+            }
+            if (!AppRegexHelper.isEmailValid(email)) {
+              helperService.showMessage(context, 'Please provide valid email.',
+                  error: true);
+              return;
+            }
+            if (!AppRegexHelper.hasMinLength(password) ||
+                !AppRegexHelper.hasMinLength(rePassword)) {
+              helperService.showMessage(
+                  context, 'Please provide at least 6 characters in password.',
                   error: true);
               return;
             }
@@ -238,15 +243,17 @@ class _LoginState extends State<Login> {
                 setState(() {
                   login1 = true;
                 });
-                _showMessage('Signup successful, please login.');
+                helperService.showMessage(
+                    context, 'Signup successful, please login.');
               } else {
-                _showMessage(
+                helperService.showMessage(context,
                     'Username or email already exists, please try again.',
                     error: true);
               }
             });
           },
-          child: const Text('Signup'),
+          child:
+              const Text('Signup', style: TextStyles.font11DarkBlue400Weight),
         ),
       ),
       TextButton(
@@ -255,7 +262,8 @@ class _LoginState extends State<Login> {
             login1 = true;
           });
         },
-        child: const Text('Already user!'),
+        child: const Text('Already have an account?',
+            style: TextStyles.font11DarkBlue400Weight),
       ),
     ];
   }
@@ -320,15 +328,16 @@ class _LoginState extends State<Login> {
             String password = _passwordController.text;
             login(username, password).then((success) {
               if (success) {
+                helperService.showMessage(context, 'Login Successful.');
                 Navigator.of(context).pushReplacementNamed("/");
               } else {
-                _showMessage(
+                helperService.showMessage(context,
                     'Incorrect username or password, please try again.',
                     error: true);
               }
             });
           },
-          child: const Text('Login'),
+          child: const Text('Login', style: TextStyles.font11DarkBlue400Weight),
         ),
       ),
       TextButton(
@@ -337,7 +346,7 @@ class _LoginState extends State<Login> {
             login1 = false;
           });
         },
-        child: const Text('Signup?'),
+        child: const Text('Signup?', style: TextStyles.font11DarkBlue400Weight),
       ),
     ];
   }

@@ -28,4 +28,13 @@ class AppRouter {
     }
     return null;
   }
+
+  Map<String, WidgetBuilder> get routes {
+    return {
+      '/': (context) => const Home(),
+      '/login': (context) => const Login(),
+      '/tasks': (context) => const TaskList(),
+      '/view-details': (context) => const TaskDetails(),
+    };
+  }
 }

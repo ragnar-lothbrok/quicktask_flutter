@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo/helpers/helper_service.dart';
 import 'package:flutter_demo/screens/task_list.dart';
 import 'package:flutter_demo/services/task_service.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +16,7 @@ class _TaskDetailsState extends State<TaskDetails> {
   TextEditingController _descriptionController =
       TextEditingController(text: '');
   TaskService taskService = TaskService();
+  HelperService helperService = HelperService();
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> data =
@@ -42,13 +44,67 @@ class _TaskDetailsState extends State<TaskDetails> {
                 controller: _titleController,
                 keyboardType: TextInputType.multiline,
                 decoration: const InputDecoration(
-                  labelText: 'Title',
-                  contentPadding: EdgeInsets.zero,
+                  labelText: 'Enter Title',
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Colors.blueAccent, width: 1.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
                 ),
               ),
             ),
             Container(
               height: 80,
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              alignment: Alignment.center,
+              child: TextFormField(
+                controller: _descriptionController,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  labelText: 'Enter Description',
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Colors.blueAccent, width: 1.0),
+                    borderRadius: BorderRadius.all(Radius.circular(32.0)),
+                  ),
+                ),
+              ),
+            ),
+            //add for checkbox
+            Container(
+              height: 50,
+              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+              alignment: Alignment.center,
+              child: CheckboxListTile(
+                checkboxShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32)),
+                checkColor: Colors.white,
+                activeColor: Colors.green,
+                title: const Text('Completed'),
+                value: task.completed,
+                onChanged: (bool? value) {
+                  setState(() {
+                    task.completed = value!;
+                    task.id = task.id;
+                    task.title = task.title;
+                    task.description = task.description;
+                    task.dueDate = task.dueDate;
+                  });
+                },
+              ),
+            ),
+            Container(
+              height: 50,
               padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               alignment: Alignment.center,
               child: InkWell(
@@ -61,6 +117,10 @@ class _TaskDetailsState extends State<TaskDetails> {
                   );
                   if (picked != null && picked != task.dueDate) {
                     setState(() {
+                      task.id = task.id;
+                      task.title = task.title;
+                      task.description = task.description;
+                      task.completed = task.completed;
                       task.dueDate =
                           DateTime(picked.year, picked.month, picked.day);
                     });
@@ -79,40 +139,14 @@ class _TaskDetailsState extends State<TaskDetails> {
               height: 80,
               padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
               alignment: Alignment.center,
-              child: TextFormField(
-                controller: _descriptionController,
-                keyboardType: TextInputType.text,
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
-            ),
-            //add for checkbox
-            Container(
-              height: 80,
-              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-              alignment: Alignment.center,
-              child: CheckboxListTile(
-                title: const Text('Completed'),
-                value: task.completed,
-                onChanged: (bool? value) {
-                  setState(() {
-                    task.completed = value!;
-                  });
-                },
-              ),
-            ),
-
-            Container(
-              height: 80,
-              padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-              alignment: Alignment.center,
               child: ElevatedButton(
                 onPressed: () async {
                   task.title = _titleController.text;
                   task.description = _descriptionController.text;
+                  bool existingTask = task.id != null;
                   await taskService.save(task);
+                  helperService.showMessage(context,
+                      'Task \'${task.title}\' ${existingTask ? 'updated' : 'saved'} successfully!');
                   if (mounted) {
                     Navigator.of(context).pop(task);
                   }

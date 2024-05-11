@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo/helpers/helper_service.dart';
+import 'package:intl/intl.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import '../main.dart';
 import 'package:flutter_demo/services/task_service.dart';
@@ -27,6 +29,7 @@ class TaskList extends StatefulWidget {
 class _TaskListState extends State<TaskList> {
   List<Task> tasks = [];
   TaskService taskService = TaskService();
+  HelperService helperService = HelperService();
 
   //fetch tasks from the server
   Future<void> fetch() async {
@@ -89,7 +92,13 @@ class _TaskListState extends State<TaskList> {
               },
               child: ListTile(
                 contentPadding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
-                leading: const Icon(Icons.alarm),
+                leading:
+                    Icon(task.completed ? Icons.alarm_off_rounded : Icons.alarm,
+                        color: task.completed
+                            ? Colors.green
+                            : DateTime.now().compareTo(task.dueDate) > 0
+                                ? Colors.red
+                                : Colors.black),
                 title: Text(task.title),
                 subtitle: Text(task.description ?? ''),
                 trailing: Row(
@@ -97,22 +106,34 @@ class _TaskListState extends State<TaskList> {
                   children: [
                     //toggle task status
                     IconButton(
-                      icon: Icon(task.completed
-                          ? Icons.check_box
-                          : Icons.check_box_outline_blank),
+                      tooltip: DateFormat('dd-MM-yyyy').format(task.dueDate),
+                      icon: Icon(
+                          task.completed
+                              ? Icons.check_box
+                              : Icons.check_box_outline_blank,
+                          color: task.completed
+                              ? Colors.green
+                              : DateTime.now().compareTo(task.dueDate) > 0
+                                  ? Colors.red
+                                  : Colors.black),
                       onPressed: () async {
                         task.completed = !task.completed;
                         TaskService taskService = TaskService();
                         bool success = await taskService.save(task);
+                        helperService.showMessage(context,
+                            'Task ${task.title} is marked ${task.completed ? 'Completed' : 'Incompleted'}!');
                         if (success) {
                           await fetch();
                         }
                       },
                     ),
                     IconButton(
+                      tooltip: DateFormat('dd-MM-yyyy').format(task.dueDate),
                       icon: const Icon(Icons.delete),
                       onPressed: () async {
                         bool success = await taskService.delete(task.id!);
+                        helperService.showMessage(context,
+                            '${task.completed ? 'Completed' : 'Incompleted'}Task ${task.title} is deleted successfully!');
                         if (success) {
                           await fetch();
                         }
@@ -125,15 +146,54 @@ class _TaskListState extends State<TaskList> {
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).pushNamed(
-            '/view-details',
-            arguments: {'task': Task(title: '', dueDate: DateTime.now())},
-          );
-          await fetch();
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: FloatingActionButton(
+              onPressed: () async {
+                await Navigator.of(context).pushNamed(
+                  '/',
+                );
+                await fetch();
+              },
+              child: const Icon(Icons.home),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: FloatingActionButton(
+              onPressed: () async {
+                await Navigator.of(context).pushNamed(
+                  '/view-details',
+                  arguments: {'task': Task(title: '', dueDate: DateTime.now())},
+                );
+                await fetch();
+              },
+              child: const Icon(Icons.add),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              onPressed: () async {
+                final ParseUser parseUser = await ParseUser.currentUser();
+                final result = await parseUser.logout();
+                if (result.success) {
+                  helperService.showMessage(context, 'Logout Successful.');
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/login',
+                    (route) => false,
+                  );
+                } else {
+                  helperService.showMessage(context, 'Error logging out',
+                      error: true);
+                }
+              },
+              child: const Icon(Icons.logout_rounded),
+            ),
+          ),
+        ],
       ),
     );
   }
