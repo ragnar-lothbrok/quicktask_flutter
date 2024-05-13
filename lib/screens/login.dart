@@ -18,13 +18,7 @@ class User {
   String email;
   String password;
 
-  String displayName;
-
-  User(
-      {required this.username,
-      required this.email,
-      required this.password,
-      required this.displayName});
+  User({required this.username, required this.email, required this.password});
 }
 
 class _LoginState extends State<Login> {
@@ -35,8 +29,6 @@ class _LoginState extends State<Login> {
   final TextEditingController _rePasswordController =
       TextEditingController(text: '');
   final TextEditingController _emailController =
-      TextEditingController(text: '');
-  final TextEditingController _displayNameController =
       TextEditingController(text: '');
   bool login1 = true;
   HelperService helperService = HelperService();
@@ -190,27 +182,6 @@ class _LoginState extends State<Login> {
         ),
       ),
       Container(
-        height: height,
-        padding: padding,
-        alignment: Alignment.center,
-        child: TextFormField(
-          controller: _displayNameController,
-          keyboardType: TextInputType.name,
-          decoration: const InputDecoration(
-            labelText: 'Enter Display Name',
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.blueAccent, width: 1.0),
-              borderRadius: BorderRadius.all(Radius.circular(32.0)),
-            ),
-          ),
-        ),
-      ),
-      Container(
         padding: const EdgeInsets.fromLTRB(0, 50, 0, 10),
         child: ElevatedButton(
           style: ButtonStyle(
@@ -221,7 +192,6 @@ class _LoginState extends State<Login> {
             String password = _passwordController.text;
             String rePassword = _rePasswordController.text;
             String email = _emailController.text.trim().toLowerCase();
-            String displayName = _displayNameController.text.trim();
             if (password != rePassword) {
               helperService.showMessage(
                   context, 'Password and Re-password do not match.',
@@ -241,17 +211,13 @@ class _LoginState extends State<Login> {
               return;
             }
 
-            User user = User(
-                username: username,
-                email: email,
-                password: password,
-                displayName: displayName);
+            User user =
+                User(username: username, email: email, password: password);
             signup(user).then((success) {
               if (success) {
                 _passwordController.clear();
                 _rePasswordController.clear();
                 _emailController.clear();
-                _displayNameController.clear();
                 setState(() {
                   login1 = true;
                 });
