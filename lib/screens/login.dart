@@ -89,6 +89,17 @@ class _LoginState extends State<Login> {
     const EdgeInsets padding = EdgeInsets.fromLTRB(50, 0, 50, 0);
     return [
       Container(
+          height: 50,
+          padding: padding,
+          alignment: Alignment.center,
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text(
+              'QuickTask - Task Management App',
+            ),
+            backgroundColor: Colors.lightBlue,
+          )),
+      Container(
         height: height,
         padding: padding,
         alignment: Alignment.center,
@@ -280,6 +291,17 @@ class _LoginState extends State<Login> {
     const double height = 100;
     const EdgeInsets padding = EdgeInsets.fromLTRB(80, 0, 80, 0);
     return [
+      Container(
+          height: 50,
+          padding: padding,
+          alignment: Alignment.center,
+          child: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text(
+              'QuickTask - Task Management App',
+            ),
+            backgroundColor: Colors.lightBlue,
+          )),
       Container(
         height: height,
         padding: padding,
