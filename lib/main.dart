@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'routing/app_router.dart';
-import 'package:flutter_demo/screens/home.dart';
-import 'package:flutter_demo/screens/login.dart';
-import 'package:flutter_demo/screens/task_details.dart';
-import 'package:flutter_demo/screens/task_list.dart';
 
 //Parse Server Configuration
 const applicationId = '9RqhvlrNY7uSuhVOi7vZb3957u1lNp0xppvJpbtc';
@@ -24,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'QuickTask - Task Management App',
+      title: 'QuickTask',
       onGenerateRoute: router.generateRoute,
       routes: router.routes,
     );

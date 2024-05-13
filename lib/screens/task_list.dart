@@ -73,7 +73,7 @@ class _TaskListState extends State<TaskList> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'QuickTask - Task Management App',
+          'QuickTask',
         ),
         backgroundColor: Colors.lightBlue,
       ),

@@ -81,14 +81,25 @@ class _LoginState extends State<Login> {
     const EdgeInsets padding = EdgeInsets.fromLTRB(50, 0, 50, 0);
     return [
       Container(
-          height: 50,
+          height: 60,
           padding: padding,
           alignment: Alignment.center,
           child: AppBar(
             automaticallyImplyLeading: false,
-            title: const Text(
-              'QuickTask - Task Management App',
+            toolbarHeight: 30.0,
+            // flexibleSpace: Container(),
+            centerTitle: true,
+            elevation: 10,
+            shape: const Border(
+              bottom: BorderSide(width: 1, color: Colors.black12),
             ),
+            title: const Text('QuickTask',
+                overflow: TextOverflow.clip,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
+                )),
             backgroundColor: Colors.lightBlue,
           )),
       Container(
@@ -258,14 +269,25 @@ class _LoginState extends State<Login> {
     const EdgeInsets padding = EdgeInsets.fromLTRB(80, 0, 80, 0);
     return [
       Container(
-          height: 50,
+          height: 60,
           padding: padding,
           alignment: Alignment.center,
           child: AppBar(
             automaticallyImplyLeading: false,
-            title: const Text(
-              'QuickTask - Task Management App',
+            toolbarHeight: 30.0,
+            // flexibleSpace: Container(),
+            centerTitle: true,
+            elevation: 10,
+            shape: const Border(
+              bottom: BorderSide(width: 1, color: Colors.black12),
             ),
+            title: const Text('QuickTask',
+                overflow: TextOverflow.clip,
+                softWrap: false,
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
+                )),
             backgroundColor: Colors.lightBlue,
           )),
       Container(
